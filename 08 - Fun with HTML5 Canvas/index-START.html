@@ -1,20 +1,68 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <title>HTML5 Canvas</title>
-  <link rel="icon" href="https://fav.farm/🔥" />
-</head>
-<body>
-<canvas id="draw" width="800" height="800"></canvas>
-<script>
-</script>
+  <head>
+    <meta charset="UTF-8" />
+    <title>HTML5 Canvas</title>
+    <link rel="icon" href="https://fav.farm/🔥" />
+  </head>
+  <body>
+    <canvas id="draw" width="800" height="800"></canvas>
+    <script>
+      const canvas = document.querySelector("#draw");
+      const ctx = canvas.getContext("2d");
 
-<style>
-  html, body {
-    margin: 0;
-  }
-</style>
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
 
-</body>
+      //ctx.strokeStyle = "#253645";
+      ctx.lineJoin = "round";
+      ctx.lineCap = "round";
+      ctx.lineWidth = 36;
+
+      let isDrawing = false; //flag to check if drawing is happening
+
+      let lastX = 0;
+      let lastY = 0;
+
+      let hue = 0;
+      let widthIncreases = true;
+
+      function myDrawing(event) {
+        if (!isDrawing) return;
+        ctx.strokeStyle = `hsl(${hue} 100% 65% )`;
+
+        ctx.beginPath();
+        ctx.moveTo(lastX, lastY);
+        ctx.lineTo(event.offsetX, event.offsetY);
+        ctx.stroke();
+        [lastX, lastY] = [event.offsetX, event.offsetY];
+        hue++;
+
+        if (ctx.lineWidth >= 100 || ctx.lineWidth <= 1) {
+          widthIncreases = !widthIncreases;
+        }
+
+        if (widthIncreases) {
+          ctx.lineWidth++;
+        } else {
+          ctx.lineWidth--;
+        }
+      }
+
+      canvas.addEventListener("mousedown", (event) => {
+        isDrawing = true;
+        [lastX, lastY] = [event.offsetX, event.offsetY];
+      });
+      canvas.addEventListener("mousemove", myDrawing);
+      canvas.addEventListener("mouseup", () => (isDrawing = false));
+      canvas.addEventListener("mouseout", () => (isDrawing = false));
+    </script>
+
+    <style>
+      html,
+      body {
+        margin: 0;
+      }
+    </style>
+  </body>
 </html>
